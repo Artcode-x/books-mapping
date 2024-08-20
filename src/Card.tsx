@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { BookInformation } from "./lib/types";
+import { FC } from "react"
+import { BookInformation } from "./lib/types"
 
 const Card: FC<{ book: BookInformation }> = ({ book }) => {
   return (
@@ -13,11 +13,10 @@ const Card: FC<{ book: BookInformation }> = ({ book }) => {
       </p>
       <p>
         <b>Отзыв: </b>
-        {book.reviews.map((r) => `${r.text} (${r.user.name})`).join(", ") ||
-          "-"}
+        {book.reviews.map((r) => `${r.text} (${r.user.name})`).join(", ") || "-"}
       </p>
     </div>
-  );
-};
+  )
+}
 
-export default Card;
+export default Card
