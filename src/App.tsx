@@ -1,5 +1,5 @@
 import "./styles.css"
-import { Book, BookInformation, User } from "./lib/types"
+import { Book, BookInformation, Review, User } from "./lib/types"
 import { getBooks, getUsers, getReviews } from "./lib/api"
 import { useEffect, useState, FC } from "react"
 import Card from "./Card"
@@ -19,13 +19,25 @@ import Card from "./Card"
 
 // // В объектах реализующих интерфейс BookInformation, ReviewInformation// указана полная информация об пользователе и обзоре.
 
-const toBookInformation = (book: Book, users: User[]): BookInformation => {
+const toBookInformation = (book: Book, users: User[], reviews: Review[]): BookInformation => {
   const authorName = users.find((el) => el.id === book.authorId)?.name || "avtor neizvesten"
+
   return {
     id: book.id,
     name: book.name || "Книга без названия",
     // array1.find((element) => element > 10);
     author: { name: authorName, id: book.authorId },
+    // reviews: book.reviewIds.map((id) => {
+    //   const review = reviews.find((el) => el.id === id)
+
+    //   const authorName = users.find((el) => el.id === review?.userId)?.name || "avtor neizvesten"
+
+    //   return {
+    //     id: id,
+    //     text: review?.text || "",
+    //     user: { id: review?.userId || "", name: authorName },
+    //   }
+    // }),
     reviews: [{ id: "test", text: "test text", user: { id: "sdf", name: "Reviewer" } }],
     description: book.description,
   }
@@ -55,11 +67,23 @@ const App: FC = () => {
     fetchUsers()
   }, [])
 
+  const fetchReviews = async (bookId: number) => {
+    setIsLoading(true)
+    const response = await getReviews(bookId)
+    setIsLoading(false)
+    return response
+  }
+
   return (
     <div>
       <h1>Мои книги:</h1>
       {isLoading && <div>Загрузка...</div>}
-      {!isLoading && books.map((b) => <Card key={b.id} book={toBookInformation(b, users)} />)}
+      {!isLoading &&
+        books.map((b) => {
+          // const reviews = fetchReviews(b.id).then((response) => response)
+          const reviews: Review[] = []
+          return <Card key={b.id} book={toBookInformation(b, users, reviews)} />
+        })}
     </div>
   )
 }
